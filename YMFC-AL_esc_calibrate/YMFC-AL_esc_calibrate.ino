@@ -60,6 +60,9 @@ void setup(){
   Wire.begin();                                                                         //Start the wire library as master
   TWBR = 12;                                                                            //Set the I2C clock speed to 400kHz.
 
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+
   //Arduino Uno pins default to inputs, so they don't need to be explicitly declared as inputs.
   DDRD |= B11110000;                                                                    //Configure digital poort 4, 5, 6 and 7 as output.
   DDRB |= B00010000;                                                                    //Configure digital poort 12 as output.
@@ -293,11 +296,11 @@ void loop(){
 
       //We can't print all the data at once. This takes to long and the angular readings will be off.
       if(loop_counter == 0)Serial.print("Pitch: ");
-      if(loop_counter == 1)Serial.print(angle_pitch ,0);
+      if(loop_counter == 1)Serial.print(angle_pitch);
       if(loop_counter == 2)Serial.print(" Roll: ");
-      if(loop_counter == 3)Serial.print(angle_roll ,0);
+      if(loop_counter == 3)Serial.print(angle_roll);
       if(loop_counter == 4)Serial.print(" Yaw: ");
-      if(loop_counter == 5)Serial.println(gyro_yaw / 65.5 ,0);
+      if(loop_counter == 5)Serial.println(gyro_yaw / 65.5);
 
       loop_counter ++;
       if(loop_counter == 60)loop_counter = 0;      
@@ -518,10 +521,3 @@ void gyro_signalen(){
   acc_z = acc_axis[eeprom_data[30] & 0b00000011];                //Set acc_z to the correct axis that was stored in the EEPROM.
   if(eeprom_data[30] & 0b10000000)acc_z *= -1;                   //Invert acc_z if the MSB of EEPROM bit 30 is set.
 }
-
-
-
-
-
-
-

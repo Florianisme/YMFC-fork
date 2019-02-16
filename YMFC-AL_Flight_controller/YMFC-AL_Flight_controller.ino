@@ -21,8 +21,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PID gain and limit settings
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float pid_p_gain_roll = 1.2;               //Gain setting for the roll P-controller
-float pid_i_gain_roll = 0.0;              //Gain setting for the roll I-controller
+float pid_p_gain_roll = 1.2;               //Gain setting for the roll P-controller (steps of 0.2)
+float pid_i_gain_roll = 0.0;              //Gain setting for the roll I-controller (steps of 0.01)
 float pid_d_gain_roll = 5.0;              //Gain setting for the roll D-controller
 int pid_max_roll = 400;                    //Maximum output of the PID-controller (+/-)
 
@@ -71,7 +71,7 @@ boolean gyro_angles_set;
 //Setup routine
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup(){
-  Serial.begin(57600);
+  //Serial.begin(57600);  
   //Copy the EEPROM data for fast access data.
   for(start = 0; start <= 35; start++)eeprom_data[start] = EEPROM.read(start);
   start = 0;                                                                //Set start back to zero.
@@ -87,9 +87,6 @@ void setup(){
 
   //Use the led on the Arduino for startup indication.
   digitalWrite(12,HIGH);                                                    //Turn on the warning led.
-
-  pinMode(2, OUTPUT);
-  digitalWrite(2, HIGH);
 
   //Check the EEPROM signature to make sure that the setup program is executed.
   while(eeprom_data[33] != 'J' || eeprom_data[34] != 'M' || eeprom_data[35] != 'B')delay(10);
@@ -120,7 +117,7 @@ void setup(){
     PORTD &= B00001111;                                                     //Set digital poort 4, 5, 6 and 7 low.
     delay(3);                                                               //Wait 3 milliseconds before the next loop.
   }
-  //Now that we have 2000 measures, we need to devide by 2000 to get the average gyro offset.
+  //Now that we have 2000 measures, we need to divide by 2000 to get the average gyro offset.
   gyro_axis_cal[1] /= 2000;                                                 //Divide the roll total by 2000.
   gyro_axis_cal[2] /= 2000;                                                 //Divide the pitch total by 2000.
   gyro_axis_cal[3] /= 2000;                                                 //Divide the yaw total by 2000.
@@ -198,8 +195,8 @@ void loop(){
   }
   
   //Place the MPU-6050 spirit level and note the values in the following two lines for calibration.
-  angle_pitch_acc += 10.0;                                                   //Accelerometer calibration value for pitch.
-  angle_roll_acc -= 0.0;                                                    //Accelerometer calibration value for roll.
+  angle_pitch_acc += 9.13;                                                   //Accelerometer calibration value for pitch.
+  angle_roll_acc -= 0.85;                                                    //Accelerometer calibration value for roll.
   
   angle_pitch = angle_pitch * 0.9996 + angle_pitch_acc * 0.0004;            //Correct the drift of the gyro pitch angle with the accelerometer pitch angle.
   angle_roll = angle_roll * 0.9996 + angle_roll_acc * 0.0004;               //Correct the drift of the gyro roll angle with the accelerometer roll angle.
