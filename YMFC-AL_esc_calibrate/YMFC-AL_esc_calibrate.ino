@@ -283,6 +283,9 @@ void loop(){
       //57.296 = 1 / (3.142 / 180) The Arduino asin function is in radians
       angle_pitch_acc = asin((float)acc_y/acc_total_vector[0])* 57.296;                //Calculate the pitch angle.
       angle_roll_acc = asin((float)acc_x/acc_total_vector[0])* -57.296;                //Calculate the roll angle.
+
+      angle_pitch_acc += 7.09;
+      angle_roll_acc -= 2.39;
       
       if(!first_angle){
         angle_pitch = angle_pitch_acc;                                                 //Set the pitch angle to the accelerometer angle.

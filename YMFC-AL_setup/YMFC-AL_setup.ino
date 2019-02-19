@@ -46,10 +46,6 @@ void setup(){
   Wire.begin();             //Start the I2C as master
   Serial.begin(57600);      //Start the serial connetion @ 57600bps
   delay(250);               //Give the gyro time to start 
-
-  // Act as voltage supply for the receiver
-  pinMode(2, OUTPUT);
-  digitalWrite(2, HIGH);
 }
 //Main program
 void loop(){

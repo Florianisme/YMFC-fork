@@ -195,8 +195,8 @@ void loop(){
   }
   
   //Place the MPU-6050 spirit level and note the values in the following two lines for calibration.
-  angle_pitch_acc += 9.13;                                                   //Accelerometer calibration value for pitch.
-  angle_roll_acc -= 0.85;                                                    //Accelerometer calibration value for roll.
+  angle_pitch_acc += 7.09;                                                   //Accelerometer calibration value for pitch.
+  angle_roll_acc -= 2.39;                                                    //Accelerometer calibration value for roll.
   
   angle_pitch = angle_pitch * 0.9996 + angle_pitch_acc * 0.0004;            //Correct the drift of the gyro pitch angle with the accelerometer pitch angle.
   angle_roll = angle_roll * 0.9996 + angle_roll_acc * 0.0004;               //Correct the drift of the gyro roll angle with the accelerometer roll angle.
@@ -275,11 +275,11 @@ void loop(){
   throttle = receiver_input_channel_3;                                      //We need the throttle signal as a base signal.
 
   if (start == 2){                                                          //The motors are started.
-    if (throttle > 1800) throttle = 1800;                                   //We need some room to keep full control at full throttle.
-    esc_1 = throttle - pid_output_pitch + pid_output_roll + pid_output_yaw; //Calculate the pulse for esc 1 (front-right - CCW)
-    esc_2 = throttle + pid_output_pitch + pid_output_roll - pid_output_yaw; //Calculate the pulse for esc 2 (rear-right - CW)
-    esc_3 = throttle + pid_output_pitch - pid_output_roll + pid_output_yaw; //Calculate the pulse for esc 3 (rear-left - CCW)
-    esc_4 = throttle - pid_output_pitch - pid_output_roll - pid_output_yaw; //Calculate the pulse for esc 4 (front-left - CW)
+    throttle = min(throttle, 1800);                                   //We need some room to keep full control at full throttle.
+    esc_1 = throttle - pid_output_pitch + pid_output_roll - pid_output_yaw; //Calculate the pulse for esc 1 (front-right - CCW)
+    esc_2 = throttle + pid_output_pitch + pid_output_roll + pid_output_yaw; //Calculate the pulse for esc 2 (rear-right - CW)
+    esc_3 = throttle + pid_output_pitch - pid_output_roll - pid_output_yaw; //Calculate the pulse for esc 3 (rear-left - CCW)
+    esc_4 = throttle - pid_output_pitch - pid_output_roll + pid_output_yaw; //Calculate the pulse for esc 4 (front-left - CW)
 
     if (battery_voltage < 1240 && battery_voltage > 800){                   //Is the battery connected?
       esc_1 += esc_1 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-1 pulse for voltage drop.
@@ -288,15 +288,11 @@ void loop(){
       esc_4 += esc_4 * ((1240 - battery_voltage)/(float)3500);              //Compensate the esc-4 pulse for voltage drop.
     } 
 
-    if (esc_1 < 1100) esc_1 = 1100;                                         //Keep the motors running.
-    if (esc_2 < 1100) esc_2 = 1100;                                         //Keep the motors running.
-    if (esc_3 < 1100) esc_3 = 1100;                                         //Keep the motors running.
-    if (esc_4 < 1100) esc_4 = 1100;                                         //Keep the motors running.
-
-    if(esc_1 > 2000)esc_1 = 2000;                                           //Limit the esc-1 pulse to 2000us.
-    if(esc_2 > 2000)esc_2 = 2000;                                           //Limit the esc-2 pulse to 2000us.
-    if(esc_3 > 2000)esc_3 = 2000;                                           //Limit the esc-3 pulse to 2000us.
-    if(esc_4 > 2000)esc_4 = 2000;                                           //Limit the esc-4 pulse to 2000us.  
+    //Keep the motors running.
+    esc_1 = constrain(esc_1, 1100, 2000);
+    esc_2 = constrain(esc_2, 1100, 2000);
+    esc_3 = constrain(esc_3, 1100, 2000);
+    esc_4 = constrain(esc_4, 1100, 2000);
   }
 
   else{
